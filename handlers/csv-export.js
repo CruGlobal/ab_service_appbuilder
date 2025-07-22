@@ -136,7 +136,8 @@ let getSQL = (
    let sort;
 
    if (obj instanceof AB.Class.ABObjectQuery && obj.where?.rules?.length) {
-      where.rules.push(obj.where);
+      const objWhere = AB.cloneDeep(obj.where);
+      where.rules.push(objWhere);
    }
 
    if (dc.settings) {
