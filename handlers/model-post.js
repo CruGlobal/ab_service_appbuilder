@@ -31,6 +31,7 @@ module.exports = {
       //    required: true,
       //    validation: { type: "uuid" }
       // }
+      skipPack: { boolean: true, optional: true },
    },
 
    /**
@@ -51,6 +52,9 @@ module.exports = {
                // NOTE: this ends the service call
                return Errors.missingObject(id, req, cb);
             }
+
+            const skipPack = req.param("skipPack") || false;
+            // {bool} should we skip the csvPack step?
 
             var values = req.param("values");
 
@@ -109,7 +113,11 @@ module.exports = {
                            cleanReturnData(AB, object, [data]).then(() => {
                               // pull out the new row for use in our other steps
                               newRow = data;
-                              newRowPacked = object.model().csvPack({ data });
+                              if (!skipPack) {
+                                 newRowPacked = object
+                                    .model()
+                                    .csvPack({ data });
+                              }
 
                               // proceed with the process
                               done(null, data);
@@ -178,7 +186,12 @@ module.exports = {
                   serviceResponse: (done) => {
                      // So let's end the service call here, then proceed
                      // with the rest
-                     cb(null, newRowPacked);
+                     if (!skipPack) {
+                        cb(null, newRowPacked);
+                     } else {
+                        cb(null, newRow);
+                     }
+
                      done();
                   },
 

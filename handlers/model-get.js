@@ -84,6 +84,8 @@ module.exports = {
        * cond.offset
        * cond.limit
        */
+
+      skipPack: { boolean: true, optional: true },
    },
 
    /**
@@ -104,6 +106,7 @@ module.exports = {
 
          const id = req.param("objectID");
          const cond = req.param("cond");
+         const skipPack = req.param("skipPack") || false;
          var object = AB.objectByID(id);
          if (!object) {
             object = AB.queryByID(id);
@@ -230,65 +233,66 @@ module.exports = {
             });
          }
 
-         // // For testing Large Data sets ...
-         // // Use a DataCollection or Grid that is viewing these
-         // // objects:
-         // // we will make sure there are 400,000 rows in the result
-         // // to test our csvPacking of large datasets.
-         // if (
-         //    [
-         //       "f241851d-9435-4edd-8476-96001ab15357",
-         //       // "c1a3642d-3863-4eb7-ac98-3dd18de3e683",
-         //       "721797cd-9dd9-4b1a-955d-70f1b79756b5",
-         //    ].indexOf(object.id) > -1
-         // ) {
-         //    if (result.data?.length > 0) {
-         //       await copyTo(AB, result.data, 400000);
-         //    }
-         // }
+         if (!skipPack) {
+            // // For testing Large Data sets ...
+            // // Use a DataCollection or Grid that is viewing these
+            // // objects:
+            // // we will make sure there are 400,000 rows in the result
+            // // to test our csvPacking of large datasets.
+            // if (
+            //    [
+            //       "f241851d-9435-4edd-8476-96001ab15357",
+            //       // "c1a3642d-3863-4eb7-ac98-3dd18de3e683",
+            //       "721797cd-9dd9-4b1a-955d-70f1b79756b5",
+            //    ].indexOf(object.id) > -1
+            // ) {
+            //    if (result.data?.length > 0) {
+            //       await copyTo(AB, result.data, 400000);
+            //    }
+            // }
 
-         // let preCSVPackBytes = JSON.stringify(result).length;
-         // csv pack our results
-         req.performance?.mark("CSV Pack");
+            // let preCSVPackBytes = JSON.stringify(result).length;
+            // csv pack our results
+            req.performance?.mark("CSV Pack");
 
-         // if we are handling alot of data, let's fork a worker
-         // to do the CSV packing for us.
-         // NOTE: 10000 is the size of a single batch in csvPackBatch.js
-         //       so we can use that as a threshold for when to
-         //       switch to that routine.
-         if (result.data?.length > 10000) {
-            // This is large enought to justify using our csvPackBatch utility
-            req.log(`${result.data.length} rows => WORKER: csvPack()`);
+            // if we are handling alot of data, let's fork a worker
+            // to do the CSV packing for us.
+            // NOTE: 10000 is the size of a single batch in csvPackBatch.js
+            //       so we can use that as a threshold for when to
+            //       switch to that routine.
+            if (result.data?.length > 10000) {
+               // This is large enought to justify using our csvPackBatch utility
+               req.log(`${result.data.length} rows => WORKER: csvPack()`);
 
-            try {
-               // most of our attempts to use worker threads need to
-               // have simple functions to process the data.  So we can't
-               // access external Objects and call their functions in the fn()
-               // passed to the worker. So in our optimizations we need to pre
-               // parse the data our object.model().csvPack() would lookup
-               // inernally to perform it's job.
+               try {
+                  // most of our attempts to use worker threads need to
+                  // have simple functions to process the data.  So we can't
+                  // access external Objects and call their functions in the fn()
+                  // passed to the worker. So in our optimizations we need to pre
+                  // parse the data our object.model().csvPack() would lookup
+                  // inernally to perform it's job.
 
-               // Our Operation object is the simplified dataset for a
-               // simplified worker function.
-               let keys = ["list", "json"];
-               let Operation = {
-                  jobID: req.jobID,
-                  // startTime: process.hrtime(),
-                  data: result,
-                  stringifyFields: object
-                     .fields((f) => keys.indexOf(f.key) > -1)
-                     .map((f) => f.columnName),
-                  connections: object.connectFields().map(function (f) {
-                     return {
-                        id: f.id,
-                        relationName: f.relationName(),
-                        columnName: f.columnName,
-                        connPK: f.datasourceLink.PK(),
-                     };
-                  }),
-               };
+                  // Our Operation object is the simplified dataset for a
+                  // simplified worker function.
+                  let keys = ["list", "json"];
+                  let Operation = {
+                     jobID: req.jobID,
+                     // startTime: process.hrtime(),
+                     data: result,
+                     stringifyFields: object
+                        .fields((f) => keys.indexOf(f.key) > -1)
+                        .map((f) => f.columnName),
+                     connections: object.connectFields().map(function (f) {
+                        return {
+                           id: f.id,
+                           relationName: f.relationName(),
+                           columnName: f.columnName,
+                           connPK: f.datasourceLink.PK(),
+                        };
+                     }),
+                  };
 
-               /*
+                  /*
                // Testing code for experimenting on using Worker Threads
                // and other methods to offload the processing.
 
@@ -306,33 +310,34 @@ module.exports = {
                // result = await csvPackWorker(sharedBuffer);
                */
 
-               // Currently prefering to use the csvPackBatch.js
-               // utility to do the CSV packing.
-               result = await CSVPackBatch(Operation);
-            } catch (e) {
-               req.log(" worker: csvPack() ERROR");
-               req.log(e);
-               req.log(" falling back to object.model().csvPack()");
+                  // Currently prefering to use the csvPackBatch.js
+                  // utility to do the CSV packing.
+                  result = await CSVPackBatch(Operation);
+               } catch (e) {
+                  req.log("csvPackBatch() ERROR:");
+                  req.log(e);
+                  req.log(" falling back to object.model().csvPack()");
+                  result = object.model().csvPack(result);
+               }
+            } else {
+               // if we don't have that many rows, lets just use the
+               // object.model().csvPack() method.
+               // it is faster than, our csvPackBatch.js method, but
+               // doesn't give up the cpu for large datasets and multiple
+               // parallel requests with large datasets can lock up the
+               // Event Loop.
                result = object.model().csvPack(result);
             }
-         } else {
-            // if we don't have that many rows, lets just use the
-            // object.model().csvPack() method.
-            // it is faster than, our csvPackBatch.js method, but
-            // doesn't give up the cpu for large datasets and multiple
-            // parallel requests with large datasets can lock up the
-            // Event Loop.
-            result = object.model().csvPack(result);
-         }
-         req.performance?.measure("CSV Pack");
+            req.performance?.measure("CSV Pack");
 
-         // let postCSVPackBytes = JSON.stringify(result).length;
-         // req.log(
-         //    `CSV Pack: ${preCSVPackBytes} -> ${postCSVPackBytes} (${(
-         //       (postCSVPackBytes / preCSVPackBytes) *
-         //       100
-         //    ).toFixed(2)}%)`
-         // );
+            // let postCSVPackBytes = JSON.stringify(result).length;
+            // req.log(
+            //    `CSV Pack: ${preCSVPackBytes} -> ${postCSVPackBytes} (${(
+            //       (postCSVPackBytes / preCSVPackBytes) *
+            //       100
+            //    ).toFixed(2)}%)`
+            // );
+         }
 
          cb(null, result);
       } catch (err) {

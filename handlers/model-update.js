@@ -38,6 +38,7 @@ module.exports = {
       values: { object: true, required: true },
       fromProcessManager: { boolean: true, optional: true },
       // uuid: { string: { uuid: true }, required: true }
+      skipPack: { boolean: true, optional: true },
    },
 
    /**
@@ -67,6 +68,7 @@ module.exports = {
             var id = req.param("ID");
             var values = req.param("values");
             const fromProcessManager = req.param("fromProcessManager");
+            const skipPack = req.param("skipPack") || false;
 
             // Special Case:  SiteUser
             // Remove any special fields if they don't have values set.
@@ -166,9 +168,11 @@ module.exports = {
                            req.performance.measure("update");
                            cleanReturnData(AB, object, [result]).then(() => {
                               newRow = result;
-                              newRowPacked = object
-                                 .model()
-                                 .csvPack({ data: result });
+                              if (!skipPack) {
+                                 newRowPacked = object
+                                    .model()
+                                    .csvPack({ data: result });
+                              }
 
                               // proceed with the process
                               done(null, result);
@@ -210,7 +214,11 @@ module.exports = {
                   serviceResponse: (done) => {
                      // So let's end the service call here, then proceed
                      // with the rest
-                     cb(null, newRowPacked);
+                     if (!skipPack) {
+                        cb(null, newRowPacked);
+                     } else {
+                        cb(null, newRow);
+                     }
                      done();
                   },
 
