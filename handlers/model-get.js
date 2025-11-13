@@ -136,6 +136,7 @@ module.exports = {
          var condDefaults = {
             languageCode: req.languageCode(),
             username: req.username(),
+            email: req._user?.email,
          };
 
          // NOTE: cond is expected to have a jobID set now
