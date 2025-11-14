@@ -78,6 +78,7 @@ module.exports = {
        * cond.offset
        * cond.limit
        */
+      skipPack: { boolean: true, optional: true },
    },
 
    /**

@@ -31,6 +31,7 @@ module.exports = {
       //    required: true,
       //    validation: { type: "uuid" }
       // }
+      skipPack: { boolean: true, optional: true },
    },
 
    /**

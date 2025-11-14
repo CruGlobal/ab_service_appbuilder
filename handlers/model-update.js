@@ -38,6 +38,7 @@ module.exports = {
       values: { object: true, required: true },
       fromProcessManager: { boolean: true, optional: true },
       // uuid: { string: { uuid: true }, required: true }
+      skipPack: { boolean: true, optional: true },
    },
 
    /**
