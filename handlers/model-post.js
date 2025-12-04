@@ -110,18 +110,20 @@ module.exports = {
                         object.model().create(values, null, condDefaults, req)
                      )
                         .then((data) => {
-                           cleanReturnData(AB, object, [data]).then(() => {
-                              // pull out the new row for use in our other steps
-                              newRow = data;
-                              if (!skipPack) {
-                                 newRowPacked = object
-                                    .model()
-                                    .csvPack({ data });
-                              }
+                           cleanReturnData(AB, object, [data]).then(
+                              async () => {
+                                 // pull out the new row for use in our other steps
+                                 newRow = data;
+                                 if (!skipPack) {
+                                    newRowPacked = await object
+                                       .model()
+                                       .csvPack({ data });
+                                 }
 
-                              // proceed with the process
-                              done(null, data);
-                           });
+                                 // proceed with the process
+                                 done(null, data);
+                              }
+                           );
                         })
                         .catch((err) => {
                            if (err) {
