@@ -39,6 +39,13 @@ controller.afterStartup((req, cb) => {
          );
       }
    });
+
+   // temporary test to ensure our tests are running the correct version:
+   setInterval(() => {
+      console.log("################");
+      console.log("## APPBUILDER VERSION: ", version);
+      console.log("################");
+   }, 10000);
 });
 // controller.beforeShutdown((cb)=>{ return cb(/* err */) });
 controller.init();
