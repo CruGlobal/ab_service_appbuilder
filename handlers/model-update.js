@@ -166,17 +166,19 @@ module.exports = {
                      updateData(AB, object, id, values, condDefaults, req)
                         .then((result) => {
                            req.performance.measure("update");
-                           cleanReturnData(AB, object, [result]).then(() => {
-                              newRow = result;
-                              if (!skipPack) {
-                                 newRowPacked = object
-                                    .model()
-                                    .csvPack({ data: result });
-                              }
+                           cleanReturnData(AB, object, [result]).then(
+                              async () => {
+                                 newRow = result;
+                                 if (!skipPack) {
+                                    newRowPacked = await object
+                                       .model()
+                                       .csvPack({ data: result });
+                                 }
 
-                              // proceed with the process
-                              done(null, result);
-                           });
+                                 // proceed with the process
+                                 done(null, result);
+                              }
+                           );
                         })
                         .catch((err) => {
                            req.logError("Error performing update:", err);
