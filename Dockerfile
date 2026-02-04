@@ -8,6 +8,11 @@
 ## $ docker build -t digiserve/ab-appbuilder:master .
 ## $ docker push digiserve/ab-appbuilder:master
 ##
+## Multi-platform (M1/M2/M3 Mac → amd64 + arm64):
+## $ docker buildx create --use  # once, if no builder
+## $ docker buildx build --platform linux/amd64,linux/arm64 -t digiserve/ab-appbuilder:master --push .
+## Or use: $ DOCKER_ARGS="--platform linux/amd64,linux/arm64 --push" ./build.sh
+##
 
 ARG BRANCH=master
 
