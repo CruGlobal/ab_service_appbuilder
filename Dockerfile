@@ -28,12 +28,11 @@ COPY . /app
 
 WORKDIR /app
 
-# Reproducible install; use npm i -f only if npm ci fails (e.g. peer deps)
-RUN npm ci && npm cache clean --force
+RUN npm i -f
 
 WORKDIR /app/AppBuilder
 
-RUN npm ci && npm cache clean --force
+RUN npm i -f
 
 WORKDIR /app
 
