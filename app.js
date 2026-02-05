@@ -9,7 +9,7 @@ if (AB.defaults.env("TELEMETRY_PROVIDER", "sentry") == "sentry") {
    AB.telemetry.init("sentry", {
       dsn: AB.defaults.env(
          "SENTRY_DSN",
-         "https://3ed320565d15db8450ab51ec5c1aec9d@o144358.ingest.sentry.io/4506143138840576"
+         "https://3ed320565d15db8450ab51ec5c1aec9d@o144358.ingest.sentry.io/4506143138840576",
       ),
       release: version,
    });
@@ -31,14 +31,15 @@ controller.afterStartup((req, cb) => {
    Netsuite.catalog().then((tables) => {
       if (!tables) {
          console.error(
-            "appbuilder.afterStartup(): ######  Netsuite.catalog() returned null"
+            "appbuilder.afterStartup(): ######  Netsuite.catalog() returned null",
          );
       } else {
          console.log(
-            `appbuilder.afterStartup(): Netsuite.catalog(): returned ${tables.length} entries.`
+            `appbuilder.afterStartup(): Netsuite.catalog(): returned ${tables.length} entries.`,
          );
       }
    });
 });
+
 // controller.beforeShutdown((cb)=>{ return cb(/* err */) });
 controller.init();
