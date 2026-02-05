@@ -22,11 +22,11 @@ COPY . /app
 
 WORKDIR /app
 
-RUN npm i -f
+RUN npm ci -f
 
 WORKDIR /app/AppBuilder
 
-RUN npm i -f
+RUN npm ci -f
 
 WORKDIR /app
 
