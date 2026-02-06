@@ -6,10 +6,10 @@
    "author": "Johnny Hausman",
    "license": "MIT",
    "dependencies": {
-      "@digiserve/ab-utils": "github:CruGlobal/ab-utils#9f35b236d050d6d8d6ad890d3b4e43f38de53a5c",
+      "@digiserve/ab-utils": "github:CruGlobal/ab-utils#1.10.1",
       "async": "^3.2.0",
       "axios": "^1.7.7",
-      "cote": "^1.0.2",
+      "cote": "^1.2.0",
       "ejs": "^3.1.10",
       "knex": "^2.4.0",
       "lodash": "^4.17.21",
@@ -40,7 +40,7 @@
    },
    "devDependencies": {
       "@eslint/js": "^9.15.0",
-      "chai": "^4.3.4",
+      "chai": "^4.3.7",
       "eslint": "^9.26.0",
       "eslint-config-prettier": "^10.1.8",
       "eslint-plugin-prettier": "^5.4.0",
