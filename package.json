@@ -8,7 +8,7 @@
    "dependencies": {
       "@digiserve/ab-utils": "github:CruGlobal/ab-utils#1.10.2",
       "async": "^3.2.0",
-      "axios": "^1.7.7",
+      "axios": "^1.13.5",
       "cote": "^1.2.0",
       "ejs": "^3.1.10",
       "knex": "^2.4.0",
