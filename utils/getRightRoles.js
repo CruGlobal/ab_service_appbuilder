@@ -1,4 +1,4 @@
-const FilterComplex = require("../AppBuilder/platform/FilterComplex");
+import FilterComplex from "../AppBuilder/platform/FilterComplex.js";
 
 function isDataValid(AB, scope, currentObject, data) {
    const filter_helper = new FilterComplex(null, AB);
@@ -41,7 +41,7 @@ function isDataValid(AB, scope, currentObject, data) {
  * @param {Object} data
  * @return {Promise}
  */
-module.exports = async function (AB, currentObject, data) {
+export default async function (AB, currentObject, data) {
    let roles = [];
    // Check if working with SITE_SCOPE or SITE_ROLE object
    if (
@@ -73,4 +73,4 @@ module.exports = async function (AB, currentObject, data) {
       }
    });
    return roles;
-};
+}

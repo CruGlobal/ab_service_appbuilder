@@ -2,6 +2,7 @@
    "name": "appbuilder",
    "version": "1.6.16+p11406.c21300",
    "description": "(AppBuilder) A multi-tenant aware service to process our AppBuilder requests.",
+   "type": "module",
    "main": "app.js",
    "author": "Johnny Hausman",
    "license": "MIT",

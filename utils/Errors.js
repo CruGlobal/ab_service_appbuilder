@@ -1,7 +1,7 @@
 const searchDupEntries = /Duplicate entry '(.+)' for key '(.+)'/;
 const searchInsertTableName = /insert into `*.*`*\.*`(.*)` \(/;
 
-module.exports = {
+export default {
    isRetryError: (code) => {
       /*
 ab_appbuilder         :  Error: connect ETIMEDOUT

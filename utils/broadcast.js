@@ -1,4 +1,4 @@
-// const getRightRoles = require("./getRightRoles.js");
+// import getRightRoles from "./getRightRoles.js";
 
 async function prepareBroadcast({
    /*AB,*/ req,
@@ -68,4 +68,4 @@ async function prepareBroadcast({
       copyTo,
    };
 }
-module.exports = { prepareBroadcast };
+export { prepareBroadcast };

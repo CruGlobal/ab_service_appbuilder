@@ -1,19 +1,17 @@
+import async from "async";
+import ABBootstrap from "../AppBuilder/ABBootstrap.js";
+import cleanReturnData from "../AppBuilder/utils/cleanReturnData.js";
+import Errors from "../utils/Errors.js";
+// import UpdateConnectedFields from "../utils/broadcastUpdateConnectedFields.js";
+import { prepareBroadcast } from "../utils/broadcast.js";
+import { registerProcessTrigger } from "../utils/processTrigger/manager.js";
+import { clearCache } from "../utils/cacheManager.js";
+
 /**
  * model-post
  * our Request handler.
  */
-const async = require("async");
-const ABBootstrap = require("../AppBuilder/ABBootstrap");
-const cleanReturnData = require("../AppBuilder/utils/cleanReturnData");
-const Errors = require("../utils/Errors");
-// const UpdateConnectedFields = require("../utils/broadcastUpdateConnectedFields.js");
-const { prepareBroadcast } = require("../utils/broadcast.js");
-const {
-   registerProcessTrigger,
-} = require("../utils/processTrigger/manager.js");
-const { clearCache } = require("../utils/cacheManager.js");
-
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
@@ -97,7 +95,7 @@ module.exports = {
                                  values[k] = results[k];
                               });
                               done();
-                           }
+                           },
                         );
                      } else {
                         done();
@@ -107,7 +105,7 @@ module.exports = {
                   // 1) Perform the Initial Create of the data
                   create: (done) => {
                      req.retry(() =>
-                        object.model().create(values, null, condDefaults, req)
+                        object.model().create(values, null, condDefaults, req),
                      )
                         .then((data) => {
                            cleanReturnData(AB, object, [data]).then(
@@ -122,7 +120,7 @@ module.exports = {
 
                                  // proceed with the process
                                  done(null, data);
-                              }
+                              },
                            );
                         })
                         .catch((err) => {
@@ -154,7 +152,7 @@ module.exports = {
                         },
                         (err) => {
                            done(err);
-                        }
+                        },
                      );
                   },
                   perpareBroadcast: (done) => {
@@ -244,7 +242,7 @@ module.exports = {
                                  },
                                  (err) => {
                                     next(err);
-                                 }
+                                 },
                               );
                            },
                            trigger: async () => {
@@ -258,7 +256,7 @@ module.exports = {
                                           populate: true,
                                           disableMinifyRelation: true,
                                        },
-                                       req
+                                       req,
                                     )
                                  )[0];
 
@@ -327,7 +325,7 @@ module.exports = {
                               "stale.update",
                            ]);
                            done(err);
-                        }
+                        },
                      );
                   },
                },
@@ -339,7 +337,7 @@ module.exports = {
                   //    cb(err);
                   //    return;
                   // }
-               }
+               },
             );
          })
          .catch((err) => {

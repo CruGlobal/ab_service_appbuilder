@@ -1,6 +1,6 @@
-const sinon = require("sinon");
-const assert = require("assert");
-const proxyquire = require("proxyquire");
+import sinon from "sinon";
+import assert from "assert";
+import proxyquire from "proxyquire";
 
 const createFake = sinon.fake.resolves();
 const removeFake = sinon.fake.resolves();
@@ -19,7 +19,7 @@ const ProcessTriggerQueue = proxyquire(
             },
          ]),
       },
-   }
+   },
 );
 
 const mockReq = {

@@ -1,28 +1,25 @@
+import async from "async";
+import ABBootstrap from "../AppBuilder/ABBootstrap.js";
+import cleanReturnData from "../AppBuilder/utils/cleanReturnData.js";
+import Errors from "../utils/Errors.js";
+// import RetryFind from "../utils/RetryFind.js";
+// import UpdateConnectedFields from "../utils/broadcastUpdateConnectedFields.js";
+import { prepareBroadcast } from "../utils/broadcast.js";
+import { registerProcessTrigger } from "../utils/processTrigger/manager.js";
+import { clearCache } from "../utils/cacheManager.js";
+import { ref /*, raw  */ } from "objection";
+
 /**
  * model-update
  * Handle any operations where an Object is trying to update a value it is
  * responsible for.
  */
-const async = require("async");
-const ABBootstrap = require("../AppBuilder/ABBootstrap");
-const cleanReturnData = require("../AppBuilder/utils/cleanReturnData");
-const Errors = require("../utils/Errors");
-// const RetryFind = require("../utils/RetryFind");
-// const UpdateConnectedFields = require("../utils/broadcastUpdateConnectedFields.js");
-const { prepareBroadcast } = require("../utils/broadcast.js");
-const {
-   registerProcessTrigger,
-} = require("../utils/processTrigger/manager.js");
-const { clearCache } = require("../utils/cacheManager.js");
-
-const { ref /*, raw  */ } = require("objection");
-
 const IgnoredUserFields = ["password", "salt", "lastLogin"];
 // {array}
 // A list of fields on the SiteUser object that should not be updated by this
 // service if they don't have a valid value.
 
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
@@ -107,7 +104,7 @@ module.exports = {
                                  values[k] = results[k];
                               });
                               done();
-                           }
+                           },
                         );
                      } else {
                         done();
@@ -177,7 +174,7 @@ module.exports = {
 
                                  // proceed with the process
                                  done(null, result);
-                              }
+                              },
                            );
                         })
                         .catch((err) => {
@@ -265,7 +262,7 @@ module.exports = {
                                  },
                                  (err) => {
                                     next(err);
-                                 }
+                                 },
                               );
                            },
                            trigger: async () => {
@@ -280,7 +277,7 @@ module.exports = {
                                           populate: true,
                                           disableMinifyRelation: true,
                                        },
-                                       req
+                                       req,
                                     )
                                  )[0];
 
@@ -293,14 +290,14 @@ module.exports = {
                                  if (!pureData) {
                                     req.notify.developer(
                                        new Error(
-                                          "Unexpected response from model.find()"
+                                          "Unexpected response from model.find()",
                                        ),
                                        {
                                           context:
                                              "appbuilder.model-update trigger() missing data for process trigger request",
                                           params: req.params(),
                                           id,
-                                       }
+                                       },
                                     );
                                  }
 
@@ -368,7 +365,7 @@ module.exports = {
 
                            req.performance.log(message);
                            done(err);
-                        }
+                        },
                      );
                   },
                },
@@ -380,7 +377,7 @@ module.exports = {
                   //    cb(err);
                   //    return;
                   // }
-               }
+               },
             );
          })
          .catch((err) => {

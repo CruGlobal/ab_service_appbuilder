@@ -7,7 +7,7 @@
  * This route will return true/false when queried with a given ENV variable.
  */
 
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
