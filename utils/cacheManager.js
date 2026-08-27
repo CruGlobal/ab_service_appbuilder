@@ -37,7 +37,7 @@ async function clearCache(AB, req, objID, uuid) {
    }
    req.serviceRequest("api_sails.user-cache-stale", jobData).catch(() => {});
    req.serviceRequest("user_manager.user-version-cache-stale", jobData).catch(
-      () => {}
+      () => {},
    );
 }
-module.exports = { clearCache };
+export { clearCache };

@@ -1,6 +1,6 @@
-const pendingTriggerTable = require("../../../queries/pendingTrigger.js");
-const sinon = require("sinon");
-const assert = require("assert");
+import pendingTriggerTable from "../../../queries/pendingTrigger.js";
+import sinon from "sinon";
+import assert from "assert";
 
 const mockReq = {
    query: (sql, data, cb) => cb(),

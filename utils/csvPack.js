@@ -1,3 +1,8 @@
+import _ from "lodash";
+import Papa from "papaparse";
+import prettyTime from "pretty-time";
+import { parentPort, workerData } from "worker_threads";
+
 /**
  * DEPRECIATED
  * This is a sample test of using a worker thread to process a large
@@ -12,10 +17,7 @@
  *
  */
 
-const { parentPort, workerData } = require("worker_threads");
-// const msgpack = require("msgpack-lite");
-
-// The dataset is passed as `workerData`
+// // The dataset is passed as `workerData`
 // Access the SharedArrayBuffer
 // const sharedArray = new Uint8Array(workerData);
 
@@ -24,9 +26,6 @@ const { parentPort, workerData } = require("worker_threads");
 
 const Operation = workerData;
 
-const _ = require("lodash");
-const Papa = require("papaparse");
-const prettyTime = require("pretty-time");
 let jobID = Operation.jobID;
 
 function log(message) {

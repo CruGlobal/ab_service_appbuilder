@@ -2,8 +2,11 @@
 // appbuilder
 // (AppBuilder) A multi-tenant award service to process our AppBuilder requests.
 //
-const AB = require("@digiserve/ab-utils");
-const { version } = require("./package");
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const { version } = require("./package.json");
+
+import AB from "@digiserve/ab-utils";
 // Use sentry by default, but can override with env.TELEMETRY_PROVIDER
 if (AB.defaults.env("TELEMETRY_PROVIDER", "sentry") == "sentry") {
    AB.telemetry.init("sentry", {
@@ -14,11 +17,8 @@ if (AB.defaults.env("TELEMETRY_PROVIDER", "sentry") == "sentry") {
       release: version,
    });
 }
-const {
-   initProcessTriggerQueues,
-} = require("./utils/processTrigger/manager.js");
-
-const Netsuite = require("./utils/Netsuite.js");
+import { initProcessTriggerQueues } from "./utils/processTrigger/manager.js";
+import Netsuite from "./utils/Netsuite.js";
 
 var controller = AB.controller("appbuilder");
 controller.waitForDB = true;

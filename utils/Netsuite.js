@@ -1,6 +1,6 @@
-const OAuth = require("oauth-1.0a");
-const crypto = require("crypto");
-const axios = require("axios");
+import OAuth from "oauth-1.0a";
+import crypto from "crypto";
+import axios from "axios";
 
 /**
  * (taken from https://github.com/CruGlobal/global-hr-update/blob/master/back-end/api/netsuite.js)
@@ -72,7 +72,7 @@ const defaultKeys = [
 ];
 // the expected ENV variables
 
-module.exports = {
+export default {
    oauthPreparation: function OAuthPreparation(credentials) {
       // Create Token and OAuth
       credentials.token = {
@@ -152,7 +152,7 @@ module.exports = {
             `${credentials.NETSUITE_BASE_URL}/metadata-catalog`,
             "GET",
             null,
-            { "Content-Type": "application/swagger+json" }
+            { "Content-Type": "application/swagger+json" },
          );
          // console.log(response);
 
@@ -245,7 +245,7 @@ module.exports = {
          {
             "Content-Type": "application/schema+json",
             Accept: "application/schema+json",
-         }
+         },
       );
       // console.log(response);
 
@@ -275,7 +275,6 @@ module.exports = {
 
       let URL = `${credentials.NETSUITE_QUERY_BASE_URL}/suiteql${qs}`;
 
-      let fields = [];
       let response = await fetch(
          credentials,
          URL,
@@ -283,7 +282,7 @@ module.exports = {
          {
             q: sql,
          },
-         { Prefer: "transient" }
+         { Prefer: "transient" },
       );
       // console.log(response);
 
@@ -295,7 +294,7 @@ module.exports = {
       table,
       sqlCond,
       limit = 0,
-      offset = 0
+      offset = 0,
    ) {
       if (!credentials) {
          credentials = this.defaultCredentials();
@@ -335,7 +334,7 @@ module.exports = {
          lookups.push(
             fetch(credentials, urlItem, "GET", {}, headers).then((res) => {
                rows.push(res.data);
-            })
+            }),
          );
       }
       await Promise.all(lookups);

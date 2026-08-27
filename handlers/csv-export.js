@@ -1,16 +1,16 @@
+import ABBootstrap from "../AppBuilder/ABBootstrap.js";
+import _ from "lodash";
+
 /**
  * csv-export
  * our Request handler.
  */
 
-const ABBootstrap = require("../AppBuilder/ABBootstrap");
 // {ABBootstrap}
 // responsible for initializing and returning an {ABFactory} that will work
 // with the current tenant for the incoming request.
 
-const _ = require("lodash");
-
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
@@ -76,7 +76,7 @@ module.exports = {
             let dc = AB.definitionByID(defCSV.settings.dataviewID);
             if (!dc) {
                let err = new Error(
-                  `Unknown dc id [${defCSV.settings.dataviewID}]`
+                  `Unknown dc id [${defCSV.settings.dataviewID}]`,
                );
                cb(err);
                return;
@@ -87,7 +87,7 @@ module.exports = {
                AB.queryByID(dc.settings.datasourceID);
             if (!obj) {
                let err = new Error(
-                  `Unknown object/query id [${dc.settings.datasourceID}]`
+                  `Unknown object/query id [${dc.settings.datasourceID}]`,
                );
                cb(err);
                return;
@@ -103,7 +103,7 @@ module.exports = {
                   extraWhere: where,
                   hiddenFieldIds: defCSV.settings.hiddenFieldIds,
                },
-               req
+               req,
             ).then((SQL) => {
                cb(null, {
                   SQL,
@@ -127,7 +127,7 @@ module.exports = {
 let getSQL = (
    AB,
    { hasHeader, dc, obj, userData, extraWhere, hiddenFieldIds = [] },
-   req
+   req,
 ) => {
    let where = {
       glue: "and",
@@ -287,7 +287,7 @@ let getSQL = (
                            'JSON_UNQUOTE(JSON_EXTRACT(JSON_EXTRACT({transCol}, SUBSTRING(JSON_UNQUOTE(JSON_SEARCH({transCol}, "one", "{languageCode}")), 1, 4)), \'$."{columnName}"\'))'
                               .replace(/{transCol}/g, transCol)
                               .replace(/{languageCode}/g, languageCode)
-                              .replace(/{columnName}/g, f.columnName)
+                              .replace(/{columnName}/g, f.columnName),
                         );
                      } else {
                         select = `IFNULL(\`${columnName}\`, '')`;
@@ -323,7 +323,7 @@ let getSQL = (
                      (f) =>
                         hiddenFieldIds.indexOf(f.id) < 0 &&
                         f.key != "calculate" &&
-                        f.key != "TextFormula"
+                        f.key != "TextFormula",
                   )
                   .map((f) => `"${f.label}"`)
                   .join(",")} UNION ALL`;
@@ -370,7 +370,7 @@ let getSQL = (
 
             // NOTE: we want to start with the LONGEST ones first:
             let sortedKeys = Object.keys(quoteHash).sort(
-               (a, b) => b.length - a.length
+               (a, b) => b.length - a.length,
             );
             sortedKeys.forEach((k) => {
                SQL = SQL.replaceAll(k, quoteHash[k]);

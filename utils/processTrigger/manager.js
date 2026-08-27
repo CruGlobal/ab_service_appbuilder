@@ -4,10 +4,10 @@
  * from being overwhelmed with failing requests. The Queue is a fallback to save
  * failed requests and handle retries, if process manager is unavailable.
  */
-const { v4: uuid } = require("uuid");
-const CircuitBreaker = require("opossum");
-const ProcessTriggerQueue = require("./queue.js");
-const getTenants = require("../../queries/getTenants.js");
+import { v4 as uuid } from "uuid";
+import CircuitBreaker from "opossum";
+import ProcessTriggerQueue from "./queue.js";
+import getTenants from "../../queries/getTenants.js";
 
 const processTriggerQueueCache = {};
 /**
@@ -37,8 +37,8 @@ async function initProcessTriggerQueues(req, config) {
          getProcessTriggerQueue(
             tenant.uuid,
             req,
-            config?.processTrigger?.retryInterval
-         )
+            config?.processTrigger?.retryInterval,
+         ),
       );
    });
    await Promise.all(promises);
@@ -81,7 +81,7 @@ function initCircuitBreaker(config) {
                      context:
                         "appbuilder:utils/processTrigger/manager.js: error remoivng request from queue.",
                      inputs,
-                  })
+                  }),
                );
 
             // return true so the failure doesn't affect the circuit breaker
@@ -93,7 +93,7 @@ function initCircuitBreaker(config) {
    };
    pmTriggerCircuitBreaker = new CircuitBreaker(
       (req, jobData) => req.serviceRequest("process_manager.trigger", jobData),
-      options
+      options,
    );
    pmTriggerCircuitBreaker.fallback(saveToQueue);
 
@@ -139,7 +139,7 @@ async function getProcessTriggerQueue(tenant, req, retryInterval) {
          tenant,
          registerProcessTrigger,
          req,
-         retryInterval
+         retryInterval,
       );
       await processTriggerQueueCache[tenant].init();
    }
@@ -190,8 +190,4 @@ function registerProcessTrigger(req, { key, data, requestID, rowLogID }) {
    return pmTriggerCircuitBreaker.fire(req, jobData);
 }
 
-// Exports are helpers that use the triggerQueue of the correct tenant
-module.exports = {
-   registerProcessTrigger,
-   initProcessTriggerQueues,
-};
+export { registerProcessTrigger, initProcessTriggerQueues };
