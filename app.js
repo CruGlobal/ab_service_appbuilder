@@ -2,23 +2,23 @@
 // appbuilder
 // (AppBuilder) A multi-tenant award service to process our AppBuilder requests.
 //
-const AB = require("@digiserve/ab-utils");
-const { version } = require("./package");
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const { version } = require("./package.json");
+
+import AB from "@digiserve/ab-utils";
 // Use sentry by default, but can override with env.TELEMETRY_PROVIDER
 if (AB.defaults.env("TELEMETRY_PROVIDER", "sentry") == "sentry") {
    AB.telemetry.init("sentry", {
       dsn: AB.defaults.env(
          "SENTRY_DSN",
-         "https://3ed320565d15db8450ab51ec5c1aec9d@o144358.ingest.sentry.io/4506143138840576"
+         "https://3ed320565d15db8450ab51ec5c1aec9d@o144358.ingest.sentry.io/4506143138840576",
       ),
       release: version,
    });
 }
-const {
-   initProcessTriggerQueues,
-} = require("./utils/processTrigger/manager.js");
-
-const Netsuite = require("./utils/Netsuite.js");
+import { initProcessTriggerQueues } from "./utils/processTrigger/manager.js";
+import Netsuite from "./utils/Netsuite.js";
 
 var controller = AB.controller("appbuilder");
 controller.waitForDB = true;
@@ -31,14 +31,15 @@ controller.afterStartup((req, cb) => {
    Netsuite.catalog().then((tables) => {
       if (!tables) {
          console.error(
-            "appbuilder.afterStartup(): ######  Netsuite.catalog() returned null"
+            "appbuilder.afterStartup(): ######  Netsuite.catalog() returned null",
          );
       } else {
          console.log(
-            `appbuilder.afterStartup(): Netsuite.catalog(): returned ${tables.length} entries.`
+            `appbuilder.afterStartup(): Netsuite.catalog(): returned ${tables.length} entries.`,
          );
       }
    });
 });
+
 // controller.beforeShutdown((cb)=>{ return cb(/* err */) });
 controller.init();

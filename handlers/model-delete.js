@@ -1,20 +1,18 @@
+import async from "async";
+import ABBootstrap from "../AppBuilder/ABBootstrap.js";
+import cleanReturnData from "../AppBuilder/utils/cleanReturnData.js";
+import Errors from "../utils/Errors.js";
+// import RetryFind from "../utils/RetryFind.js";
+// import UpdateConnectedFields from "../utils/broadcastUpdateConnectedFields.js";
+import { registerProcessTrigger } from "../utils/processTrigger/manager.js";
+import { prepareBroadcast } from "../utils/broadcast.js";
+import { clearCache } from "../utils/cacheManager.js";
+
 /**
  * model-delete
  * our Request handler.
  */
-const async = require("async");
-const ABBootstrap = require("../AppBuilder/ABBootstrap");
-const cleanReturnData = require("../AppBuilder/utils/cleanReturnData");
-const Errors = require("../utils/Errors");
-// const RetryFind = require("../utils/RetryFind.js");
-const {
-   registerProcessTrigger,
-} = require("../utils/processTrigger/manager.js");
-// const UpdateConnectedFields = require("../utils/broadcastUpdateConnectedFields.js");
-const { prepareBroadcast } = require("../utils/broadcast.js");
-const { clearCache } = require("../utils/cacheManager.js");
-
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
@@ -100,8 +98,8 @@ module.exports = {
                               disableMinifyRelation: true,
                            },
                            // condDefaults, // <-- .find() doesn't take
-                           req
-                        )
+                           req,
+                        ),
                      )
                         .then((old) => {
                            oldItem = old ? old[0] : null;
@@ -112,9 +110,9 @@ module.exports = {
                                  req.performance.mark("delete");
                                  // Now Delete the Item
                                  return req.retry(() =>
-                                    object.model().delete(id, null, req)
+                                    object.model().delete(id, null, req),
                                  );
-                              }
+                              },
                            );
                         })
                         .then((num) => {
@@ -205,7 +203,7 @@ module.exports = {
                                  },
                                  (err) => {
                                     next(err);
-                                 }
+                                 },
                               );
                            },
                            // update our Process.trigger events
@@ -274,7 +272,7 @@ module.exports = {
                               "stale.update",
                            ]);
                            done(err);
-                        }
+                        },
                      );
                   },
                },
@@ -286,7 +284,7 @@ module.exports = {
                   //    cb(err);
                   //    return;
                   // }
-               }
+               },
             );
          })
          .catch((err) => {

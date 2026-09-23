@@ -2,10 +2,14 @@
  * @class ProcessTriggerQueue
  * @description manages the unconfirmed process triggers for an individul tenant.
  */
-const pendingTriggerTable = require("../../queries/pendingTrigger.js");
-const AB = require("@digiserve/ab-utils");
+import {
+   create as pendingCreate,
+   remove as pendingRemove,
+   list as pendingList,
+} from "../../queries/pendingTrigger.js";
+import AB from "@digiserve/ab-utils";
 
-module.exports = class ProcessTriggerQueue {
+export default class ProcessTriggerQueue {
    /**
     * @constructor
     * @param {string} tenant tenant ID
@@ -31,7 +35,7 @@ module.exports = class ProcessTriggerQueue {
     */
    async init() {
       try {
-         const pendingTriggers = await pendingTriggerTable.list(this.req);
+         const pendingTriggers = await pendingList(this.req);
          pendingTriggers.forEach((row) => {
             this.Queue[row.uuid] = {
                data: {
@@ -47,7 +51,7 @@ module.exports = class ProcessTriggerQueue {
       }
       this._retryInterval = setInterval(
          () => this.retryQueued(),
-         this.retryInterval
+         this.retryInterval,
       );
    }
 
@@ -69,7 +73,7 @@ module.exports = class ProcessTriggerQueue {
       // save the req user to use on retry so that triggeredBy gets the correct user
       cloneData.user = req._user;
       this.Queue[uuid] = { data, user: cloneData.user };
-      await pendingTriggerTable.create(req, cloneData);
+      await pendingCreate(req, cloneData);
       return;
    }
 
@@ -83,7 +87,7 @@ module.exports = class ProcessTriggerQueue {
       // If it's not in the Queue it completed successfully the first time (no
       // action required)
       if (!this.Queue[uuid]) return;
-      await pendingTriggerTable.remove(req, uuid);
+      await pendingRemove(req, uuid);
       delete this.Queue[uuid];
       return;
    }
@@ -105,9 +109,9 @@ module.exports = class ProcessTriggerQueue {
                if (res == "fallback") return; // This means we still need to retry
 
                await this.remove(this.req, uuid);
-            })()
+            })(),
          );
       }
       await Promise.all(promises);
    }
-};
+}

@@ -1,7 +1,8 @@
+// import RetryFind from "./RetryFind.js";
+
 // broadcastUpdateConnectedFields.js
-// var RetryFind = require("./RetryFind.js");
-const { prepareBroadcast } = require("./broadcast.js");
-const cleanReturnData = require("../AppBuilder/utils/cleanReturnData");
+// import { prepareBroadcast } from "./broadcast.js";
+import cleanReturnData from "../AppBuilder/utils/cleanReturnData.js";
 
 function pullFieldsFromEntry(items, entry, relationName) {
    if (entry) {
@@ -32,13 +33,13 @@ function pullFieldsFromEntry(items, entry, relationName) {
 //    return safeUser;
 // }
 
-module.exports = function updateConnectedFields(
+export default function updateConnectedFields(
    AB,
    req,
    object,
    oldItem,
    newItem,
-   condDefaults
+   condDefaults,
 ) {
    const lookups = [];
    // {array[Promise]}
@@ -120,8 +121,8 @@ module.exports = function updateConnectedFields(
                      populate: true,
                   },
                   condDefaults,
-                  req
-               )
+                  req,
+               ),
             )
             .then(async (data) => {
                await (data || []).forEach(async (d) => {
@@ -146,7 +147,7 @@ module.exports = function updateConnectedFields(
                   ids: IDs,
                   condDefaults,
                });
-            })
+            }),
       );
    });
 
@@ -168,4 +169,4 @@ module.exports = function updateConnectedFields(
          });
       });
    });
-};
+}

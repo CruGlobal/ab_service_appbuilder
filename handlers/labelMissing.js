@@ -1,19 +1,18 @@
+import sqlFindLabels from "../queries/findLabels.js";
+import sqlFindLanguages from "../AppBuilder/queries/findLanguages.js";
+import fs from "fs";
+import path from "path";
+
 /**
  * labelMissing
  * our Request handler.
  */
-var sqlFindLabels = require("../queries/findLabels.js");
-var sqlFindLanguages = require("../AppBuilder/queries/findLanguages.js");
-
-const fs = require("fs");
-const path = require("path");
-
 var LabelJSON = null;
 // {obj} hash of { lang.code : { key: Label }}
 // of our previous v1 labels.  This is just here during the
 // transition, so we can reuse the existing labels from v1.
 
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
@@ -80,12 +79,12 @@ module.exports = {
       allInits.push(
          sqlFindLabels(req, keys).then((allLabels) => {
             labels = allLabels;
-         })
+         }),
       );
       allInits.push(
          sqlFindLanguages(req).then((allLang) => {
             languages = allLang;
-         })
+         }),
       );
 
       Promise.all(allInits)
@@ -204,7 +203,7 @@ module.exports = {
                   "AppBuilder",
                   "core",
                   "labels",
-                  `${code}.js`
+                  `${code}.js`,
                );
 
                fileUpdates.push(
@@ -221,7 +220,7 @@ module.exports = {
                                     "AppBuilder",
                                     "core",
                                     "labels",
-                                    `template.js`
+                                    `template.js`,
                                  );
                                  fs.readFile(
                                     pathToTemplate,
@@ -230,12 +229,12 @@ module.exports = {
                                        if (e2) {
                                           return reject(
                                              new Error(
-                                                `unable to get language contents or template lang[${pathToFile}]`
-                                             )
+                                                `unable to get language contents or template lang[${pathToFile}]`,
+                                             ),
                                           );
                                        }
                                        resolve(s2);
-                                    }
+                                    },
                                  );
                                  return;
                               }
@@ -288,7 +287,7 @@ module.exports = {
                               contents = contents.replace(
                                  "   /* key : label */",
                                  `   /* key : label */
-   "${k}" : "${newLabelHash[code][k]}",`
+   "${k}" : "${newLabelHash[code][k]}",`,
                               );
                            }
                         });
@@ -325,7 +324,7 @@ module.exports = {
                               reject(e);
                            }
                         });
-                     })
+                     }),
                ); // end fileUpdates.push()
             });
 

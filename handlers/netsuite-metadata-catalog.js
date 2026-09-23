@@ -1,11 +1,11 @@
+import Netsuite from "../utils/Netsuite.js";
+
 /**
  * netsuite-metadata-catalog
  * our Request handler.
  */
 
-const Netsuite = require("../utils/Netsuite.js");
-
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */

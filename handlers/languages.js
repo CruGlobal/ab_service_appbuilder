@@ -1,10 +1,10 @@
+import sqlFindLanguages from "../AppBuilder/queries/findLanguages.js";
+
 /**
  * languagges
  * Return a list of languages defined for a tenant.
  */
-var sqlFindLanguages = require("../AppBuilder/queries/findLanguages.js");
-
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
@@ -47,7 +47,7 @@ module.exports = {
                   language_code: l.language_code,
                   language_label: l.language_label,
                };
-            })
+            }),
          );
       } catch (err) {
          req.notify.developer(err, {

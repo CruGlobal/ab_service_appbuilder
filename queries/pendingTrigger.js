@@ -30,4 +30,4 @@ function list(req) {
    return runQuery(req, sql);
 }
 
-module.exports = { create, remove, list };
+export { create, remove, list };

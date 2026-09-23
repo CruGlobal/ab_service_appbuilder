@@ -1,16 +1,15 @@
+import ABBootstrap from "../AppBuilder/ABBootstrap.js";
+import cleanReturnData from "../AppBuilder/utils/cleanReturnData.js";
+import Errors from "../utils/Errors.js";
+// import msgpack from "msgpack-lite";
+// import path from "path";
+// import { Worker } from "worker_threads";
+
 /**
  * model-get
  * Handle any operations where an Object is trying to retrive a value[s] it is
  * responsible for.
  */
-
-const ABBootstrap = require("../AppBuilder/ABBootstrap");
-const cleanReturnData = require("../AppBuilder/utils/cleanReturnData");
-const Errors = require("../utils/Errors");
-
-// const { Worker } = require("worker_threads");
-// const msgpack = require("msgpack-lite");
-// const path = require("path");
 
 /**
  * tryFind()
@@ -38,7 +37,7 @@ function tryFind(object, cond, condDefaults, req) {
    // timeouts and connection errors and then retry the operation.
 
    var pFindAll = req.retry(() =>
-      object.model().findAll(cond, condDefaults, req)
+      object.model().findAll(cond, condDefaults, req),
    );
    // {Promise} pFindAll
    // the execution chain returning the DB result of the findAll()
@@ -51,7 +50,7 @@ function tryFind(object, cond, condDefaults, req) {
       } else {
          // do a separate lookup
          return req.retry(() =>
-            object.model().findCount(countCond, condDefaults, req)
+            object.model().findCount(countCond, condDefaults, req),
          );
       }
    });
@@ -62,7 +61,7 @@ function tryFind(object, cond, condDefaults, req) {
    return Promise.all([pFindAll, pCount]);
 }
 
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */

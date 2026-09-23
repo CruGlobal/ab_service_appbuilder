@@ -1,6 +1,8 @@
-const sinon = require("sinon");
-const assert = require("assert");
-const proxyquire = require("proxyquire").noCallThru();
+import sinon from "sinon";
+import assert from "assert";
+import Import_proxyquire from "proxyquire";
+
+const proxyquire = Import_proxyquire.noCallThru();
 
 // Mock/Fake Dependecies
 const getTenantsFake = sinon.fake.resolves([

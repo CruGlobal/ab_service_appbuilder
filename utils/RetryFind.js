@@ -1,13 +1,13 @@
 // retryFind.js
-const Errors = require("./Errors");
+import Errors from "./Errors.js";
 
-module.exports = function retryFind(
+export default function retryFind(
    object,
    cond,
    condDefaults,
    req,
    retry = 0,
-   lastError = null
+   lastError = null,
 ) {
    // prevent too many retries
    if (retry >= 3) {
@@ -21,8 +21,8 @@ module.exports = function retryFind(
 
    console.error(
       new Error(
-         "DEPRECIATED: RetryFind() is depreciated.  Use req.retry() instead."
-      )
+         "DEPRECIATED: RetryFind() is depreciated.  Use req.retry() instead.",
+      ),
    );
 
    return object
@@ -37,4 +37,4 @@ module.exports = function retryFind(
          // if we get here, this isn't a RESET, so propogate the error
          throw err;
       });
-};
+}

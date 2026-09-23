@@ -5,33 +5,50 @@
 [![Image Size](https://img.shields.io/docker/image-size/digiserve/ab-appbuilder/master?logo=docker&logoColor=white&label=Image%20Size)](https://hub.docker.com/r/digiserve/ab-appbuilder/tags)
 
 # AppBuilder Service AppBuilder
+
 A multi-tenant aware service to process our AppBuilder requests.
 
 ## Install
+
 See [ab_cli](https://github.com/CruGlobal/ab-cli)
 
 ## Pull Requests
+
 Pull Requests should be tagged with a label `major`, `minor` or `patch`. Use `major` for breaking changes, `minor` for new features, or `patch` for bug fixes. To merge without creating a release a `skip-release` tag can be added instead.
 
 :pencil: In the pull request body add release notes between these tags:
+
 ```md
 <!-- #release_notes -->
 
-<!-- /release_notes --> 
+<!-- /release_notes -->
 ```
+
 Anything between those 2 lines will be used as release notes when creating a version.
 
 ### When merged:
- - A new version will be created using semantic versioning
- - The version will be updated in `package.json`
- - A new tag and release will be created on GitHub
- - A new docker image will be built, tagged with the version and published to dockerhub
- - A Workflow in `ab_runtime` will be triggered to update the service version file.
+
+- A new version will be created using semantic versioning
+- The version will be updated in `package.json`
+- A new tag and release will be created on GitHub
+- A new docker image will be built, tagged with the version and published to dockerhub
+- A Workflow in `ab_runtime` will be triggered to update the service version file.
 
 ## Manually Building a Docker Image
+
 It may be useful to build a custom docker image from a feature branch for testing.
 This can be done through a workflow dispatch trigger.
+
 1. Go to the Actions tab
 2. Select the 'Docker Build Custom' workflow
 3. Select 'run Workflow' and fill in the form
-The image will be built from the selected branch and pushed to dockerhub using the given tags
+   The image will be built from the selected branch and pushed to dockerhub using the given tags
+
+### Docker Hub supply chain (attestations and licenses)
+
+For better Docker Hub container health ratings, builds that push to a registry should enable **provenance** and **SBOM** attestations:
+
+- **Local:** `./build.sh` already passes `--provenance=true --sbom=true` when using `docker buildx build`; use `DOCKER_ARGS="-t digiserve/ab-appbuilder:master --push" ./build.sh` so attestations are pushed with the image.
+- **CI (CruGlobal workflows):** Ensure the reusable workflow (e.g. `docker-build.yml` / `build-ecs.yml`) invokes `docker buildx build` with `--provenance=true --sbom=true` when pushing to Docker Hub. Attestations are only stored when pushing to a registry.
+
+The Dockerfile also sets OCI labels (`org.opencontainers.image.licenses="MIT"`) so the image license is visible to Docker Hub.

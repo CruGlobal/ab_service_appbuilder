@@ -1,9 +1,10 @@
+import Labels from "../AppBuilder/core/labels/labels.js";
+
 /**
  * labels
  * our Request handler.
  */
 
-var Labels = require("../AppBuilder/core/labels/labels");
 // {obj}
 // the key:label hash of the standard UI labels for our AppBuilder
 // labels.
@@ -14,7 +15,7 @@ function getLabels(req, langCode) {
    return new Promise((resolve /*, reject */) => {
       if (!Labels[langCode]) {
          var error = new Error(
-            `No label definitions for language_code=[${langCode}]`
+            `No label definitions for language_code=[${langCode}]`,
          );
          // TODO: decide if we want to keep responding with EN
          // reject(error);
@@ -30,7 +31,7 @@ function getLabels(req, langCode) {
    });
 }
 
-module.exports = {
+export default {
    /**
     * Key: the cote message key we respond to.
     */
@@ -78,7 +79,7 @@ module.exports = {
          })
          .catch((error) => {
             req.log(
-               `Error retrieving Labels for languageCode[${langCode}] : ${error.toString()}.`
+               `Error retrieving Labels for languageCode[${langCode}] : ${error.toString()}.`,
             );
             cb(error);
          });
