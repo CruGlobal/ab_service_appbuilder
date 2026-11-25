@@ -1,6 +1,6 @@
 {
    "name": "appbuilder",
-   "version": "1.6.33+p11423.c22002",
+   "version": "1.6.34+p11500",
    "description": "(AppBuilder) A multi-tenant aware service to process our AppBuilder requests.",
    "type": "module",
    "main": "app.js",
